@@ -1,14 +1,15 @@
 {
-  "name": "wheelseye-vehicle-portal",
+  "name": "ramagundam-lorry-association",
   "version": "1.0.0",
-  "private": true,
-  "description": "Secure customer vehicle tracking portal backed by the WheelsEye currentLoc API",
+  "description": "Ramagundam Lorry Association Vehicle Tracking Portal",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "express": "^5.1.0"
+    "express": "^4.19.2"
   }
 }
