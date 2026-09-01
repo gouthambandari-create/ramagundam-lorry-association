@@ -1,7 +1,7 @@
 // --- Config ---
 const VALID_USERNAME = "ramagundam";
 const VALID_PASSWORD = "rfcl123";
-const API_URL = "https://api.wheelseye.com/currentLoc?accessToken=8f0e06bd-c6c2-4e88-8400-8a251ee42865";
+const API_URL = "/api/vehicles"; // calls our own backend, which relays to WheelsEye
 
 // --- Elements ---
 const loginCard = document.getElementById("loginCard");
@@ -56,7 +56,7 @@ async function loadVehicleData() {
     if (!response.ok) throw new Error("Request failed with status " + response.status);
 
     const result = await response.json();
-    const vehicles = result?.data?.list || [];
+    const vehicles = result?.data?.data?.list || result?.data?.list || [];
 
     if (vehicles.length === 0) {
       statusMsg.textContent = "No vehicle data available.";
