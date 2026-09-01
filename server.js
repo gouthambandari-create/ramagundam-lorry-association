@@ -14,16 +14,37 @@ app.use(express.static(__dirname));
 // Relay endpoint: browser calls THIS, server calls WheelsEye (no CORS issue server-to-server)
 app.get("/api/vehicles", async (req, res) => {
   try {
-    const response = await fetch(WHEELSEYE_URL);
+    // First request to find out how many total pages there are
+    const firstResponse = await fetch(`${WHEELSEYE_URL}&pageNo=0`);
 
-    if (!response.ok) {
+    if (!firstResponse.ok) {
       return res
-        .status(response.status)
+        .status(firstResponse.status)
         .json({ success: false, message: "WheelsEye API returned an error." });
     }
 
-    const data = await response.json();
-    res.json(data);
+    const firstData = await firstResponse.json();
+    const totalPages = firstData?.data?.totalPages || 1;
+
+    let allVehicles = firstData?.data?.list || [];
+
+    // Fetch remaining pages (if any) and merge their vehicle lists
+    for (let page = 1; page < totalPages; page++) {
+      const pageResponse = await fetch(`${WHEELSEYE_URL}&pageNo=${page}`);
+      if (pageResponse.ok) {
+        const pageData = await pageResponse.json();
+        allVehicles = allVehicles.concat(pageData?.data?.list || []);
+      }
+    }
+
+    res.json({
+      message: "Ok",
+      success: true,
+      data: {
+        totalCount: firstData?.data?.totalCount,
+        list: allVehicles,
+      },
+    });
   } catch (err) {
     console.error("Error fetching WheelsEye data:", err.message);
     res.status(500).json({ success: false, message: "Failed to fetch vehicle data." });
