@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 3000;
 const WHEELSEYE_URL =
   "https://api.wheelseye.com/currentLoc?accessToken=8f0e06bd-c6c2-4e88-8400-8a251ee42865";
 
-// Serve static frontend files (index.html, style.css, app.js)
-app.use(express.static(path.join(__dirname, "public")));
+// Serve static frontend files (index.html, style.css, app.js) from the root folder
+app.use(express.static(__dirname));
 
 // Relay endpoint: browser calls THIS, server calls WheelsEye (no CORS issue server-to-server)
 app.get("/api/vehicles", async (req, res) => {
@@ -32,7 +32,7 @@ app.get("/api/vehicles", async (req, res) => {
 
 // Fallback: serve index.html for the root route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(PORT, () => {
